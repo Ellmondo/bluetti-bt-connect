@@ -33,6 +33,16 @@ forgetting to switch it back costs one gap in the data rather than all of
 it.
 """
 
+RELEASE_WAIT_SECONDS = 5
+"""How long a clean disconnect waits for a poll or write already in progress.
+
+Used when Home Assistant stops and when the entry is reloaded or removed. A
+poll normally finishes in two to three seconds. The cap exists because a
+connection attempt that is still retrying can hold the lock far longer, and
+Docker force-kills a container that takes more than 10 seconds to stop
+unless its stop_grace_period is raised.
+"""
+
 WRITE_SETTLE_SECONDS = 2
 """Pause between a write and the refresh that reads it back.
 

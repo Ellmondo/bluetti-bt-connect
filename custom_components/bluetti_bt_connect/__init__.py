@@ -7,8 +7,8 @@ import logging
 from typing import List
 from homeassistant.components import bluetooth
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP, Platform
+from homeassistant.core import Event, HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.exceptions import ConfigEntryNotReady
 
@@ -22,6 +22,7 @@ from .const import (
     DOMAIN,
     MANUFACTURER,
 )
+from .shutdown import release_connection
 from .types import FullDeviceConfig
 from .coordinator import PollingCoordinator
 
@@ -86,6 +87,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         lock,
         connection,
     )
+
+    # Close the link properly when Home Assistant stops, instead of leaving
+    # it to be cut when the process exits. Registered before the first
+    # refresh so a stop during the initial connection is covered too.
+    async def _release_on_stop(_event: Event) -> None:
+        coordinator.closing = True
+        await release_connection(lock, connection, logger)
+
+    entry.async_on_unload(
+        hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, _release_on_stop)
+    )
+
     await coordinator.async_config_entry_first_refresh()
     hass.data[DOMAIN][entry.entry_id].setdefault(DATA_COORDINATOR, coordinator)
     hass.data[DOMAIN][entry.entry_id].setdefault(DATA_LOCK, lock)
@@ -115,10 +128,24 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         return False
 
     data = hass.data.get(DOMAIN, {}).pop(entry.entry_id, {})
+    coordinator = data.get(DATA_COORDINATOR)
     connection = data.get(DATA_CONNECTION)
+    lock = data.get(DATA_LOCK)
+
+    if coordinator is not None:
+        coordinator.closing = True
 
     if connection is not None:
-        await connection.disconnect()
+        if lock is not None:
+            # Same clean close as at shutdown - never mid-conversation.
+            logger = (
+                coordinator.logger
+                if coordinator is not None
+                else logging.getLogger(__name__)
+            )
+            await release_connection(lock, connection, logger)
+        else:
+            await connection.disconnect()
 
     return True
 

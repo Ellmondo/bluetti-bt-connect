@@ -56,6 +56,14 @@ class PollingCoordinator(DataUpdateCoordinator):
         take the device back.
         """
 
+        self.closing = False
+        """Set once Home Assistant is stopping or the entry is unloading.
+
+        Treated like a release that never expires, so neither a scheduled
+        poll nor an automation's write reconnects after the link has been
+        closed cleanly.
+        """
+
         # Create client
         self.logger.info("Creating client for %s", config.name)
         bluetti_device = build_device(config.name)
@@ -80,6 +88,9 @@ class PollingCoordinator(DataUpdateCoordinator):
     @property
     def connection_released(self) -> bool:
         """Whether the connection is currently released for something else."""
+        if self.closing:
+            return True
+
         return self.release_until is not None and dt_util.utcnow() < self.release_until
 
     async def async_release_connection(
