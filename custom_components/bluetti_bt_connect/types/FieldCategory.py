@@ -9,6 +9,8 @@ DIAGNOSTICS = [
     FieldName.VER_DSP,
     FieldName.VER_BMS,
     FieldName.PACK_CELL_VOLTAGES,
+    FieldName.RAW_REGISTER_6007,
+    FieldName.RAW_REGISTER_6115,
 ]
 
 CONFIGS = [
