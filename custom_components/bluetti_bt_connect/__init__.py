@@ -11,6 +11,8 @@ from homeassistant.const import EVENT_HOMEASSISTANT_STOP, Platform
 from homeassistant.core import Event, HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.exceptions import ConfigEntryNotReady
+import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.typing import ConfigType
 
 from .utils import mac_loggable
 from bluetti_bt_connect_lib import DeviceConnection
@@ -22,6 +24,7 @@ from .const import (
     DOMAIN,
     MANUFACTURER,
 )
+from .services import async_register_services
 from .shutdown import release_connection
 from .types import FullDeviceConfig
 from .coordinator import PollingCoordinator
@@ -33,6 +36,15 @@ PLATFORMS: List[Platform] = [
     Platform.SELECT,
     Platform.NUMBER,
 ]
+
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Register the integration-wide actions."""
+    async_register_services(hass)
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

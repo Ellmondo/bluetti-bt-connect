@@ -375,5 +375,25 @@
         "name": "Power Lifting"
       }
     }
+  },
+  "services": {
+    "read_registers": {
+      "name": "Register lesen",
+      "description": "Liest einmalig einen Registerblock aus der Batterie und gibt die Rohwerte zurück. Nur lesend - es kann keine Einstellung ändern. Zum Erkunden von Adressen, die die Integration noch nicht auswertet.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Batterie",
+          "description": "Welche Batterie gelesen wird. Nur nötig, wenn mehrere eingerichtet sind."
+        },
+        "address": {
+          "name": "Adresse",
+          "description": "Erstes zu lesendes Register."
+        },
+        "count": {
+          "name": "Anzahl",
+          "description": "Wie viele Register gelesen werden, 1 bis 32."
+        }
+      }
+    }
   }
 }

@@ -458,5 +458,25 @@
                 "name": "Max Grid Import Current"
             }
         }
+    },
+    "services": {
+        "read_registers": {
+            "name": "Read registers",
+            "description": "Reads a block of registers from the battery once and returns the raw values. Read-only - it can never change a setting. For exploring addresses the integration does not decode yet.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Battery",
+                    "description": "Which battery to read. Only needed when more than one is set up."
+                },
+                "address": {
+                    "name": "Address",
+                    "description": "First register to read."
+                },
+                "count": {
+                    "name": "Count",
+                    "description": "How many registers to read, 1 to 32."
+                }
+            }
+        }
     }
 }

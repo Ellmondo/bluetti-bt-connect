@@ -1,0 +1,23 @@
+read_registers:
+  fields:
+    config_entry_id:
+      required: false
+      selector:
+        config_entry:
+          integration: bluetti_bt_connect
+    address:
+      required: true
+      example: 1700
+      selector:
+        number:
+          min: 0
+          max: 65535
+          mode: box
+    count:
+      required: false
+      default: 1
+      selector:
+        number:
+          min: 1
+          max: 32
+          mode: box
