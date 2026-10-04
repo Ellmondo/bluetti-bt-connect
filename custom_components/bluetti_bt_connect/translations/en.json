@@ -323,12 +323,6 @@
             "grid_power_all": {
                 "name": "Grid Power"
             },
-            "total_ac_consumption": {
-                "name": "Total AC Consumption"
-            },
-            "total_grid_feed": {
-                "name": "Total Grid Feed-In"
-            },
             "battery_net_power": {
                 "name": "Battery Net Power"
             },
