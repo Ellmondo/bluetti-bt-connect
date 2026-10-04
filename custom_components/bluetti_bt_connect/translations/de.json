@@ -29,12 +29,6 @@
   },
   "entity": {
     "sensor": {
-      "raw_register_6007": {
-        "name": "Rohwert Register 6007"
-      },
-      "raw_register_6115": {
-        "name": "Rohwert Register 6115"
-      },
       "ac_input_current": {
         "name": "AC Eingang Stromstärke"
       },
@@ -283,6 +277,12 @@
       },
       "pack_cell_voltages": {
         "name": "Spannung Zelle {cell_num}"
+      },
+      "pack_temperature": {
+        "name": "Pack-Temperatur"
+      },
+      "connected_devices": {
+        "name": "Verbundene Geräte"
       }
     },
     "switch": {
@@ -392,6 +392,10 @@
         "count": {
           "name": "Anzahl",
           "description": "Wie viele Register gelesen werden, 1 bis 32."
+        },
+        "slave": {
+          "name": "Slave",
+          "description": "Modbus-Slave-Adresse, von der gelesen wird. 1 ist der Wechselrichter; andere Adressen müssen in der Geräteliste der Batterie stehen (bei einem EP2000-System: 0 = EBOX, 41 = Akkupack)."
         }
       }
     }

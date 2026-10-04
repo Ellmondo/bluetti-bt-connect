@@ -26,6 +26,10 @@ SERVICE_READ_REGISTERS = "read_registers"
 ATTR_CONFIG_ENTRY_ID = "config_entry_id"
 ATTR_ADDRESS = "address"
 ATTR_COUNT = "count"
+ATTR_SLAVE = "slave"
+
+POLL_SLAVE = 1
+"""The slave normal polling reads from - always allowed."""
 
 READ_REGISTERS_SCHEMA = vol.Schema(
     {
@@ -35,6 +39,9 @@ READ_REGISTERS_SCHEMA = vol.Schema(
         ),
         vol.Optional(ATTR_COUNT, default=1): vol.All(
             vol.Coerce(int), vol.Range(min=1, max=MAX_RAW_READ_COUNT)
+        ),
+        vol.Optional(ATTR_SLAVE, default=POLL_SLAVE): vol.All(
+            vol.Coerce(int), vol.Range(min=0, max=247)
         ),
     }
 )
@@ -71,6 +78,7 @@ async def _async_read_registers(hass: HomeAssistant, call: ServiceCall) -> Servi
     coordinator = _coordinator_for(hass, call.data.get(ATTR_CONFIG_ENTRY_ID))
     address = call.data[ATTR_ADDRESS]
     count = call.data[ATTR_COUNT]
+    slave = call.data[ATTR_SLAVE]
 
     if coordinator.reader is None:
         raise ServiceValidationError("This device type has no reader")
@@ -88,10 +96,35 @@ async def _async_read_registers(hass: HomeAssistant, call: ServiceCall) -> Servi
             f"address {address} + count {count} runs past register 65535"
         )
 
-    result = await coordinator.reader.read_raw(address, count)
+    if slave != POLL_SLAVE:
+        # Only ever address a device the battery itself says is there.
+        # Asking a slave address nothing answers on is at best a timeout,
+        # and on some BLUETTI firmware a request to an unexpected unit id
+        # has hung the Modbus stack until a power cycle.
+        nodes = await coordinator.reader.read_nodes()
+
+        if nodes is None:
+            raise ServiceValidationError(
+                "Could not read the battery's node list to check that slave "
+                f"{slave} exists - try again"
+            )
+
+        known = sorted({node.slave for node in nodes} | {POLL_SLAVE})
+
+        if slave not in known:
+            raise ServiceValidationError(
+                f"Slave {slave} is not in the battery's node list. "
+                f"Devices on this system: {', '.join(str(s) for s in known)}"
+            )
+
+    result = await coordinator.reader.read_raw(address, count, slave)
 
     _LOGGER.info(
-        "read_registers %d+%d: %s", address, count, result.outcome.value
+        "read_registers %d+%d at slave %d: %s",
+        address,
+        count,
+        slave,
+        result.outcome.value,
     )
 
     return result.as_dict()

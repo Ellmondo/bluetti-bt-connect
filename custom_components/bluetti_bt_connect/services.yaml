@@ -21,3 +21,11 @@ read_registers:
           min: 1
           max: 32
           mode: box
+    slave:
+      required: false
+      default: 1
+      selector:
+        number:
+          min: 0
+          max: 247
+          mode: box

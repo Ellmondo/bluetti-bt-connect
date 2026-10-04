@@ -29,12 +29,6 @@
     },
     "entity": {
         "sensor": {
-            "raw_register_6007": {
-                "name": "Raw Register 6007"
-            },
-            "raw_register_6115": {
-                "name": "Raw Register 6115"
-            },
             "ac_input_current": {
                 "name": "AC Input Current"
             },
@@ -320,9 +314,6 @@
             "battery_stack_count": {
                 "name": "Battery Stack Count"
             },
-            "total_node_count": {
-                "name": "Total Node Count"
-            },
             "consumption_power_all": {
                 "name": "Household Consumption Power"
             },
@@ -340,6 +331,12 @@
             },
             "battery_net_power": {
                 "name": "Battery Net Power"
+            },
+            "pack_temperature": {
+                "name": "Pack Temperature"
+            },
+            "connected_devices": {
+                "name": "Connected Devices"
             }
         },
         "switch": {
@@ -475,6 +472,10 @@
                 "count": {
                     "name": "Count",
                     "description": "How many registers to read, 1 to 32."
+                },
+                "slave": {
+                    "name": "Slave",
+                    "description": "Modbus slave address to read from. 1 is the inverter; other addresses must appear in the battery's own node list (on an EP2000 system: 0 = EBOX, 41 = battery pack)."
                 }
             }
         }

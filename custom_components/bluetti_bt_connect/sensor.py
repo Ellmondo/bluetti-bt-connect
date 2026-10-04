@@ -5,7 +5,7 @@ from enum import Enum
 import logging
 from decimal import Decimal
 from typing import List
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.const import EntityCategory
@@ -228,6 +228,11 @@ class BluettiSensor(CoordinatorEntity, SensorEntity):
         self._attr_native_unit_of_measurement = unit_of_measurement
         self._attr_device_class = device_class
         self._attr_state_class = state_class
+
+        if device_class == SensorDeviceClass.TEMPERATURE:
+            # Converted temperatures (e.g. the pack's native F shown as C)
+            # would otherwise carry every decimal of the conversion.
+            self._attr_suggested_display_precision = 1
         self._attr_entity_category = category
         self._options = options
 
