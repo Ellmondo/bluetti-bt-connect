@@ -283,6 +283,24 @@
       },
       "connected_devices": {
         "name": "Verbundene Geräte"
+      },
+      "home_load_power": {
+        "name": "Hausverbrauch Leistung"
+      },
+      "self_sufficiency": {
+        "name": "Autarkiegrad"
+      },
+      "home_consumption_energy": {
+        "name": "Hausverbrauch Energie"
+      },
+      "solar_energy": {
+        "name": "Solarenergie"
+      },
+      "grid_import_energy": {
+        "name": "Netzbezug Energie"
+      },
+      "grid_export_energy": {
+        "name": "Netzeinspeisung Energie"
       }
     },
     "switch": {

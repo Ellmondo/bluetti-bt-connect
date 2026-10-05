@@ -331,6 +331,24 @@
             },
             "connected_devices": {
                 "name": "Connected Devices"
+            },
+            "home_load_power": {
+                "name": "Home Load Power"
+            },
+            "self_sufficiency": {
+                "name": "Self-Sufficiency"
+            },
+            "home_consumption_energy": {
+                "name": "Home Consumption Energy"
+            },
+            "solar_energy": {
+                "name": "Solar Energy"
+            },
+            "grid_import_energy": {
+                "name": "Grid Import Energy"
+            },
+            "grid_export_energy": {
+                "name": "Grid Export Energy"
             }
         },
         "switch": {
