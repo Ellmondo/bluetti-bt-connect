@@ -301,6 +301,81 @@
       },
       "grid_export_energy": {
         "name": "Netzeinspeisung Energie"
+      },
+      "ems_control_mode": {
+        "name": "EMS-Steuermodus"
+      },
+      "inverter_status": {
+        "name": "Wechselrichterstatus"
+      },
+      "battery_status": {
+        "name": "Batteriestatus"
+      },
+      "time_remaining_minutes": {
+        "name": "Batterie Restzeit"
+      },
+      "active_alarms": {
+        "name": "Aktive Alarme"
+      },
+      "alarm_count": {
+        "name": "Anzahl Alarme"
+      },
+      "max_charge_current": {
+        "name": "Max. Ladestrom"
+      },
+      "max_discharge_current": {
+        "name": "Max. Entladestrom"
+      },
+      "firmware_arm": {
+        "name": "Firmware ARM"
+      },
+      "firmware_dsp": {
+        "name": "Firmware DSP"
+      },
+      "firmware_iot": {
+        "name": "Firmware IoT"
+      },
+      "wifi_signal": {
+        "name": "WLAN-Signal"
+      },
+      "schedule_slot_1": {
+        "name": "Zeitplan Slot 1"
+      },
+      "schedule_slot_2": {
+        "name": "Zeitplan Slot 2"
+      },
+      "schedule_slot_3": {
+        "name": "Zeitplan Slot 3"
+      },
+      "schedule_slot_4": {
+        "name": "Zeitplan Slot 4"
+      },
+      "schedule_slot_5": {
+        "name": "Zeitplan Slot 5"
+      },
+      "schedule_slot_6": {
+        "name": "Zeitplan Slot 6"
+      },
+      "ac_pv_power": {
+        "name": "AC-gekoppelte Solarleistung"
+      },
+      "ac_pv_l1_power": {
+        "name": "AC-gekoppelte Solarleistung L1"
+      },
+      "ac_pv_l2_power": {
+        "name": "AC-gekoppelte Solarleistung L2"
+      },
+      "ac_pv_l3_power": {
+        "name": "AC-gekoppelte Solarleistung L3"
+      },
+      "ac_pv_l1_voltage": {
+        "name": "AC-gekoppelte Solarspannung L1"
+      },
+      "ac_pv_l2_voltage": {
+        "name": "AC-gekoppelte Solarspannung L2"
+      },
+      "ac_pv_l3_voltage": {
+        "name": "AC-gekoppelte Solarspannung L3"
       }
     },
     "switch": {
@@ -391,6 +466,18 @@
       },
       "power_lifting_on": {
         "name": "Power Lifting"
+      },
+      "system_error": {
+        "name": "Systemfehler"
+      },
+      "cloud_connected": {
+        "name": "Cloud verbunden"
+      },
+      "time_control_enabled": {
+        "name": "Zeitsteuerung"
+      },
+      "problem": {
+        "name": "Problem"
       }
     }
   },

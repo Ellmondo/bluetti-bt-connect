@@ -349,6 +349,81 @@
             },
             "grid_export_energy": {
                 "name": "Grid Export Energy"
+            },
+            "ems_control_mode": {
+                "name": "EMS Control Mode"
+            },
+            "inverter_status": {
+                "name": "Inverter Status"
+            },
+            "battery_status": {
+                "name": "Battery Status"
+            },
+            "time_remaining_minutes": {
+                "name": "Battery Time Remaining"
+            },
+            "active_alarms": {
+                "name": "Active Alarms"
+            },
+            "alarm_count": {
+                "name": "Alarm Count"
+            },
+            "max_charge_current": {
+                "name": "Max Charge Current"
+            },
+            "max_discharge_current": {
+                "name": "Max Discharge Current"
+            },
+            "firmware_arm": {
+                "name": "Firmware ARM"
+            },
+            "firmware_dsp": {
+                "name": "Firmware DSP"
+            },
+            "firmware_iot": {
+                "name": "Firmware IoT"
+            },
+            "wifi_signal": {
+                "name": "WiFi Signal"
+            },
+            "schedule_slot_1": {
+                "name": "Schedule Slot 1"
+            },
+            "schedule_slot_2": {
+                "name": "Schedule Slot 2"
+            },
+            "schedule_slot_3": {
+                "name": "Schedule Slot 3"
+            },
+            "schedule_slot_4": {
+                "name": "Schedule Slot 4"
+            },
+            "schedule_slot_5": {
+                "name": "Schedule Slot 5"
+            },
+            "schedule_slot_6": {
+                "name": "Schedule Slot 6"
+            },
+            "ac_pv_power": {
+                "name": "AC-Coupled Solar Power"
+            },
+            "ac_pv_l1_power": {
+                "name": "AC-Coupled Solar L1 Power"
+            },
+            "ac_pv_l2_power": {
+                "name": "AC-Coupled Solar L2 Power"
+            },
+            "ac_pv_l3_power": {
+                "name": "AC-Coupled Solar L3 Power"
+            },
+            "ac_pv_l1_voltage": {
+                "name": "AC-Coupled Solar L1 Voltage"
+            },
+            "ac_pv_l2_voltage": {
+                "name": "AC-Coupled Solar L2 Voltage"
+            },
+            "ac_pv_l3_voltage": {
+                "name": "AC-Coupled Solar L3 Voltage"
             }
         },
         "switch": {
@@ -451,6 +526,18 @@
             },
             "power_lifting_on": {
                 "name": "Power Lifting"
+            },
+            "system_error": {
+                "name": "System Error"
+            },
+            "cloud_connected": {
+                "name": "Cloud Connected"
+            },
+            "time_control_enabled": {
+                "name": "Time Control"
+            },
+            "problem": {
+                "name": "Problem"
             }
         },
         "number": {

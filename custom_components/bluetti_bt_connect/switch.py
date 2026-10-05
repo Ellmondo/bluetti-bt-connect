@@ -9,6 +9,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.const import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
 )
@@ -19,6 +20,7 @@ from bluetti_bt_connect_lib import (
     DeviceField,
     FieldName,
 )
+from bluetti_bt_connect_lib.enums import CLOUD_CONTROLLED_EMS_MODES
 
 from .types import FullDeviceConfig, get_category
 from . import device_info as dev_info, get_unique_id
@@ -241,6 +243,19 @@ class BluettiSwitch(CoordinatorEntity, SwitchEntity):
                 self.coordinator.release_until,
             )
             return
+
+        if self._field.name == FieldName.EMS_CONTROL.value:
+            # 2241 also carries the cloud modes (VPP, dynamic pricing). The
+            # switch only knows AI on (8) and off (0), so flipping it while
+            # the cloud is in charge would silently end that mode - BLUETTI's
+            # app locks the setting in that state too.
+            data = self.coordinator.data or {}
+            mode = data.get(FieldName.EMS_CONTROL_MODE.value)
+            if mode in CLOUD_CONTROLLED_EMS_MODES:
+                raise HomeAssistantError(
+                    f"AI control is locked while the battery is under cloud "
+                    f"control ({mode.name}). Change it in the BLUETTI app."
+                )
 
         result = await self.coordinator.reader.write(self._field.name, state)
 

@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 import logging
-from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.components.binary_sensor import (
+    BinarySensorDeviceClass,
+    BinarySensorEntity,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -10,9 +13,9 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
 )
-from bluetti_bt_connect_lib import build_device
+from bluetti_bt_connect_lib import build_device, FieldName
 
-from .types import FullDeviceConfig
+from .types import FullDeviceConfig, get_category
 from . import device_info as dev_info, get_unique_id
 from .const import DATA_COORDINATOR, DOMAIN
 from .coordinator import PollingCoordinator
@@ -56,6 +59,20 @@ async def async_setup_entry(
             )
         )
 
+    # Computed, not a register: true when any alarm or error flag is set -
+    # see coordinator.py. Only for devices that report alarms.
+    field_names = {f.name for f in bluetti_device.fields}
+    if FieldName.ALARM_COUNT.value in field_names:
+        sensors_to_add.append(
+            BluettiBinarySensor(
+                coordinator,
+                device_info,
+                999999,
+                FieldName.PROBLEM.value,
+                logger=logger,
+            )
+        )
+
     async_add_entities(sensors_to_add)
 
 
@@ -85,6 +102,16 @@ class BluettiBinarySensor(CoordinatorEntity, BinarySensorEntity):
         self._attr_translation_key = response_key
         self._attr_available = False
         self._attr_unique_id = get_unique_id(e_name)
+
+        try:
+            self._attr_entity_category = get_category(FieldName(response_key))
+        except ValueError:
+            self._attr_entity_category = None
+
+        if response_key in (FieldName.PROBLEM.value, FieldName.SYSTEM_ERROR.value):
+            self._attr_device_class = BinarySensorDeviceClass.PROBLEM
+        elif response_key == FieldName.CLOUD_CONNECTED.value:
+            self._attr_device_class = BinarySensorDeviceClass.CONNECTIVITY
 
     @property
     def available(self) -> bool:

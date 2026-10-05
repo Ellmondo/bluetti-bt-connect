@@ -205,4 +205,12 @@ class PollingCoordinator(DataUpdateCoordinator):
         if p1 is not None and p2 is not None and p3 is not None and pv is not None:
             data[FieldName.BATTERY_NET_POWER.value] = (p1 + p2 + p3) - pv
 
+        # Computed: anything wrong at all - an active inverter warning or
+        # fault, or one of the EBOX's IoT/BMS/meter error flags. Mirrors the
+        # fault indicator in BLUETTI's app.
+        alarm_count = data.get(FieldName.ALARM_COUNT.value)
+        system_error = data.get(FieldName.SYSTEM_ERROR.value)
+        if alarm_count is not None or system_error is not None:
+            data[FieldName.PROBLEM.value] = bool(alarm_count) or system_error is True
+
         return data
