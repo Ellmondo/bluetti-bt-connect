@@ -10,6 +10,7 @@ DIAGNOSTICS = [
     FieldName.VER_BMS,
     FieldName.PACK_CELL_VOLTAGES,
     FieldName.CONNECTED_DEVICES,
+    FieldName.TEMPERATURE_SENSOR_COUNT,
     FieldName.FIRMWARE_ARM,
     FieldName.FIRMWARE_DSP,
     FieldName.FIRMWARE_IOT,

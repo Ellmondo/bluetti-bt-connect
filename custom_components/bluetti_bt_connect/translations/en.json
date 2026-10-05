@@ -312,7 +312,7 @@
                 "name": "Active Cell Count"
             },
             "battery_stack_count": {
-                "name": "Battery Stack Count"
+                "name": "Battery Modules"
             },
             "consumption_power_all": {
                 "name": "Household Consumption Power"
@@ -424,6 +424,9 @@
             },
             "ac_pv_l3_voltage": {
                 "name": "AC-Coupled Solar L3 Voltage"
+            },
+            "temperature_sensor_count": {
+                "name": "Temperature Sensor Count"
             }
         },
         "switch": {

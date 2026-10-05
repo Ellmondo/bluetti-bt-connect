@@ -376,6 +376,15 @@
       },
       "ac_pv_l3_voltage": {
         "name": "AC-gekoppelte Solarspannung L3"
+      },
+      "active_cell_count": {
+        "name": "Anzahl Zellen"
+      },
+      "temperature_sensor_count": {
+        "name": "Anzahl Temperatursensoren"
+      },
+      "battery_stack_count": {
+        "name": "Batteriemodule"
       }
     },
     "switch": {
