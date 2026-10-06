@@ -22,7 +22,7 @@ underlying library now sends settings writes to the correct Modbus slave - **sla
 echoed writes and then overwrote them from the slave-0 setpoint). Grid
 import/export limits, working mode and the switches all **write and persist** over
 local Bluetooth now. Full detail is in the
-[library's v2.0 release notes](https://github.com/Ellmondo/bluetti-bt-connect-lib/blob/main/RELEASE_NOTES_2.0.0.md).
+[library's v2.0 release notes](https://github.com/Ellmondo/bluetti-bt-connect-lib/blob/main/CHANGELOG.md#200-2026-09-21).
 
 ### EP2000 controls
 
