@@ -9,8 +9,8 @@ Requires `bluetti-bt-connect-lib==2.0.9`.
 ### EP2000: set the battery SOC limits from Home Assistant
 
 **SOC low** (discharge floor) and **SOC high** (charge ceiling) are now
-sliders instead of read-only sensors: 5-100% in 1% steps. BLUETTI's iOS app
-only moves them in 10% steps; the battery itself takes any whole percent.
+sliders instead of read-only sensors: 5-100% in 1% steps, the same range and
+step as BLUETTI's app.
 
 A change is refused, with the reason shown in Home Assistant, when:
 
