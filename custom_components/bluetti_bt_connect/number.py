@@ -7,6 +7,7 @@ from homeassistant.components.number import NumberEntity, NumberMode
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.const import EntityCategory
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -18,12 +19,17 @@ from bluetti_bt_connect_lib import (
     FieldName,
     get_unit,
 )
+from bluetti_bt_connect_lib.enums import CLOUD_CONTROLLED_EMS_MODES, EmsControlMode
+from bluetti_bt_connect_lib.fields import check_soc_limits
 
 from .types import FullDeviceConfig, get_category
 from . import device_info as dev_info, get_unique_id
 from .const import DATA_COORDINATOR, DATA_LOCK, DOMAIN, WRITE_SETTLE_SECONDS
 from .coordinator import PollingCoordinator
 from .utils import mac_loggable, unique_id_logable
+
+SOC_LOW = FieldName.BATTERY_SOC_RANGE_START.value
+SOC_HIGH = FieldName.BATTERY_SOC_RANGE_END.value
 
 
 async def async_setup_entry(
@@ -215,6 +221,9 @@ class BluettiNumber(CoordinatorEntity, NumberEntity):
             )
             return
 
+        if self._field.name in (SOC_LOW, SOC_HIGH):
+            self._check_soc_write(int(value))
+
         result = await self.coordinator.reader.write(self._field.name, int(value))
 
         self._last_write_result = result
@@ -227,3 +236,42 @@ class BluettiNumber(CoordinatorEntity, NumberEntity):
         await asyncio.sleep(WRITE_SETTLE_SECONDS)
 
         await self.coordinator.async_request_refresh()
+
+    def _check_soc_write(self, value: int) -> None:
+        """Refuse an SOC limit the battery should not be given.
+
+        The low limit has to stay below the high one with a margin, and
+        neither is changed while something else is managing the battery:
+        BLUETTI's AI mode and the cloud modes overwrite manual settings, so
+        the write would be accepted and then quietly undone.
+        """
+        data = self.coordinator.data or {}
+
+        mode = data.get(FieldName.EMS_CONTROL_MODE.value)
+        if mode in CLOUD_CONTROLLED_EMS_MODES:
+            raise HomeAssistantError(
+                f"SOC limits are locked while the battery is under cloud "
+                f"control ({mode.name}). Change them in the BLUETTI app."
+            )
+        if mode == EmsControlMode.AI:
+            raise HomeAssistantError(
+                "BLUETTI AI mode overrides manual settings. Turn AI Control "
+                "Mode off first, or the battery may undo the change."
+            )
+
+        if self._field.name == SOC_LOW:
+            low, high = value, data.get(SOC_HIGH)
+        else:
+            low, high = data.get(SOC_LOW), value
+
+        if low is None or high is None:
+            # The other limit has not been read yet; without it the pair
+            # cannot be checked, so do not guess.
+            raise HomeAssistantError(
+                "SOC limits have not been read from the battery yet. "
+                "Try again after the next update."
+            )
+
+        problem = check_soc_limits(low, high)
+        if problem is not None:
+            raise HomeAssistantError(problem)

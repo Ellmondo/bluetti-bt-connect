@@ -2,6 +2,36 @@
 
 Newest first. Each section is also published as the GitHub release for that version. Library changes are in the [library changelog](https://github.com/Ellmondo/bluetti-bt-connect-lib/blob/main/CHANGELOG.md).
 
+## 2.0.10 (2026-10-15)
+
+Requires `bluetti-bt-connect-lib==2.0.9`.
+
+### EP2000: set the battery SOC limits from Home Assistant
+
+**SOC low** (discharge floor) and **SOC high** (charge ceiling) are now
+sliders instead of read-only sensors: 5-100% in 1% steps. BLUETTI's iOS app
+only moves them in 10% steps; the battery itself takes any whole percent.
+
+A change is refused, with the reason shown in Home Assistant, when:
+
+- SOC high would be less than 5% above SOC low,
+- AI Control Mode is on (BLUETTI's AI overrides manual settings), or the
+  battery is under cloud control (VPP, dynamic pricing),
+- the other limit has not been read yet.
+
+Each write is confirmed by the device and read back after a couple of seconds,
+like the grid limits.
+
+**After updating:** the old **SOC low** and **SOC high** sensors are replaced
+by number entities of the same name. The old sensors show as no longer
+provided; remove them from **Settings > Devices & services > Entities**.
+Their history stays with the old sensors.
+
+### German names for the grid limit sliders
+
+The four grid import/export sliders had no German translation and fell back to
+English. They, and the new SOC sliders, now have one.
+
 ## 2.0.9 (2026-10-05)
 
 Requires `bluetti-bt-connect-lib==2.0.8`.

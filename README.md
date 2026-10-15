@@ -35,7 +35,9 @@ local Bluetooth now. Full detail is in the
 | Max Grid Export Current | 2216 | A |
 | Max Grid Import Power | 2213 | W |
 | Max Grid Import Current | 2214 | A |
-| Working Mode | 2005 | Custom / Self-use / Backup / Time-of-use |
+| SOC low | 2022 | % - discharge floor, 5-100 in 1% steps |
+| SOC high | 2023 | % - charge ceiling, at least 5% above SOC low |
+| Working Mode | 2005 | Custom / Self-use / Backup / Time-of-use / Self-consumption + export |
 | AI Control Mode | 2241 | switch - **on** = Bluetti's AI/EMS manages the system and overrides manual settings; **off** = manual control |
 
 **Two things to know:**
@@ -45,6 +47,9 @@ local Bluetooth now. Full detail is in the
   moment to propagate back to the reading.
 - If manual settings ever stop sticking, check **AI Control Mode**. If it is on,
   Bluetti's AI is overriding you - turn it off for manual control.
+- SOC low and SOC high refuse a change while AI Control Mode is on or the
+  battery is under cloud control (VPP, dynamic pricing), and keep the high
+  limit at least 5% above the low one.
 
 **Grid export and grid-protection settings are regulated for grid-interconnection
 safety in many jurisdictions** (anti-islanding, voltage/frequency ride-through).

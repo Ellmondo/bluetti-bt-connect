@@ -488,6 +488,26 @@
       "problem": {
         "name": "Problem"
       }
+    },
+    "number": {
+      "max_grid_export_power": {
+        "name": "Max. Netzeinspeiseleistung"
+      },
+      "max_grid_export_current": {
+        "name": "Max. Netzeinspeisestrom"
+      },
+      "max_grid_import_power": {
+        "name": "Max. Netzbezugsleistung"
+      },
+      "ctrl_grid_max_current": {
+        "name": "Max. Netzbezugsstrom"
+      },
+      "soc_range_start": {
+        "name": "SOC niedrig"
+      },
+      "soc_range_end": {
+        "name": "SOC hoch"
+      }
     }
   },
   "services": {

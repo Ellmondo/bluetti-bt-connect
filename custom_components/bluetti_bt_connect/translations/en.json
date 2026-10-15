@@ -555,6 +555,12 @@
             },
             "ctrl_grid_max_current": {
                 "name": "Max Grid Import Current"
+            },
+            "soc_range_start": {
+                "name": "SOC low"
+            },
+            "soc_range_end": {
+                "name": "SOC high"
             }
         }
     },
