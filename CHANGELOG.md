@@ -2,6 +2,31 @@
 
 Newest first. Each section is also published as the GitHub release for that version. Library changes are in the [library changelog](https://github.com/Ellmondo/bluetti-bt-connect-lib/blob/main/CHANGELOG.md).
 
+## 2.0.11 (2026-10-25)
+
+Requires `bluetti-bt-connect-lib==2.0.10`.
+
+### EP2000: battery maintenance and cell balance
+
+BLUETTI's app suggests a battery maintenance every 3-6 months: a full
+discharge then a full charge, so the cells can rebalance. Home Assistant can
+now follow it:
+
+- **Battery Maintenance**: NOT_NEEDED, DUE, IN_PROGRESS, FINISHED, STOPPED, or
+  DUE_CONDITIONS_NOT_MET.
+- **Battery Maintenance Progress**: percent, in 10% steps like the app.
+- **Battery Maintenance Stop Reason** (diagnostic): why a run stopped, e.g.
+  GRID_OFFLINE, TEMPERATURE_HIGH or CHARGE_FAILED.
+- **Lowest Cell Voltage** and **Highest Cell Voltage**, in V to three decimals.
+- **Cell Voltage Spread**: highest minus lowest, in mV. The smaller it is, the
+  better balanced the cells are; it should be smallest at the end of a
+  maintenance charge.
+
+Useful for automations, for example a notification when maintenance is due,
+finished or stopped. Starting or stopping maintenance stays in the BLUETTI app.
+All values come from reads the integration already made, so polling is no
+slower.
+
 ## 2.0.10 (2026-10-15)
 
 Requires `bluetti-bt-connect-lib==2.0.9`.

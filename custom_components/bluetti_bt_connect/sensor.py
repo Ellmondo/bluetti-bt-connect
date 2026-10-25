@@ -233,6 +233,12 @@ class BluettiSensor(CoordinatorEntity, SensorEntity):
             # Converted temperatures (e.g. the pack's native F shown as C)
             # would otherwise carry every decimal of the conversion.
             self._attr_suggested_display_precision = 1
+        if response_key in (
+            FieldName.CELL_VOLTAGE_MIN.value,
+            FieldName.CELL_VOLTAGE_MAX.value,
+        ):
+            # Cell voltages differ in the millivolts.
+            self._attr_suggested_display_precision = 3
         self._attr_entity_category = category
         self._options = options
 

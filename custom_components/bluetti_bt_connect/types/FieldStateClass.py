@@ -82,6 +82,10 @@ FIELD_STATE_CLASS: Dict[FieldName, SensorStateClass] = {
     FieldName.PACK_BATTERY_SOC: SensorStateClass.MEASUREMENT,
     FieldName.PACK_CELL_VOLTAGES: SensorStateClass.MEASUREMENT,
     FieldName.PACK_VOLTAGE: SensorStateClass.MEASUREMENT,
+    FieldName.CELL_VOLTAGE_MIN: SensorStateClass.MEASUREMENT,
+    FieldName.CELL_VOLTAGE_MAX: SensorStateClass.MEASUREMENT,
+    FieldName.CELL_VOLTAGE_SPREAD: SensorStateClass.MEASUREMENT,
+    FieldName.BATTERY_MAINTENANCE_PROGRESS: SensorStateClass.MEASUREMENT,
 }
 
 

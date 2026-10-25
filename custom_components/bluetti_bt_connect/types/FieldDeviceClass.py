@@ -80,6 +80,9 @@ FIELD_DEVICE_CLASS: Dict[FieldName, SensorDeviceClass] = {
     FieldName.PACK_BATTERY_SOC: SensorDeviceClass.BATTERY,
     FieldName.PACK_CELL_VOLTAGES: SensorDeviceClass.VOLTAGE,
     FieldName.PACK_VOLTAGE: SensorDeviceClass.VOLTAGE,
+    FieldName.CELL_VOLTAGE_MIN: SensorDeviceClass.VOLTAGE,
+    FieldName.CELL_VOLTAGE_MAX: SensorDeviceClass.VOLTAGE,
+    FieldName.CELL_VOLTAGE_SPREAD: SensorDeviceClass.VOLTAGE,
 }
 
 

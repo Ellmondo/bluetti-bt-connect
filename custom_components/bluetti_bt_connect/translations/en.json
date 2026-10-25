@@ -427,6 +427,24 @@
             },
             "temperature_sensor_count": {
                 "name": "Temperature Sensor Count"
+            },
+            "battery_maintenance_status": {
+                "name": "Battery Maintenance"
+            },
+            "battery_maintenance_progress": {
+                "name": "Battery Maintenance Progress"
+            },
+            "battery_maintenance_stop_reason": {
+                "name": "Battery Maintenance Stop Reason"
+            },
+            "cell_voltage_min": {
+                "name": "Lowest Cell Voltage"
+            },
+            "cell_voltage_max": {
+                "name": "Highest Cell Voltage"
+            },
+            "cell_voltage_spread": {
+                "name": "Cell Voltage Spread"
             }
         },
         "switch": {

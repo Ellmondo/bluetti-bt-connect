@@ -385,6 +385,24 @@
       },
       "battery_stack_count": {
         "name": "Batteriemodule"
+      },
+      "battery_maintenance_status": {
+        "name": "Batteriewartung"
+      },
+      "battery_maintenance_progress": {
+        "name": "Fortschritt Batteriewartung"
+      },
+      "battery_maintenance_stop_reason": {
+        "name": "Abbruchgrund Batteriewartung"
+      },
+      "cell_voltage_min": {
+        "name": "Niedrigste Zellspannung"
+      },
+      "cell_voltage_max": {
+        "name": "Höchste Zellspannung"
+      },
+      "cell_voltage_spread": {
+        "name": "Zellspannungsdifferenz"
       }
     },
     "switch": {
