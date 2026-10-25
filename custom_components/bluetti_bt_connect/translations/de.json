@@ -409,6 +409,48 @@
       },
       "battery_power_bms": {
         "name": "Batterieleistung (BMS)"
+      },
+      "battery_soc": {
+        "name": "Batteriepack Ladestand"
+      },
+      "bms_controller_model": {
+        "name": "Batteriesteuerung (BMS) Modell"
+      },
+      "consumption_power_all": {
+        "name": "Hausverbrauch Leistung"
+      },
+      "grid_power_all": {
+        "name": "Netzleistung"
+      },
+      "load_p1_power": {
+        "name": "Last Phase 1 Leistung"
+      },
+      "load_p2_power": {
+        "name": "Last Phase 2 Leistung"
+      },
+      "load_p3_power": {
+        "name": "Last Phase 3 Leistung"
+      },
+      "pv_input_power_all": {
+        "name": "PV Eingangsleistung gesamt (alle Strings)"
+      },
+      "soh": {
+        "name": "Batteriepack Zustand (SOH)"
+      },
+      "total_ac_power": {
+        "name": "AC Aktivität gesamt (Betrag)"
+      },
+      "total_pv_power": {
+        "name": "PV Leistung gesamt"
+      },
+      "total_self_consumption": {
+        "name": "Eigenverbrauch gesamt"
+      },
+      "voltage": {
+        "name": "Batteriepack Spannung"
+      },
+      "working_mode": {
+        "name": "Arbeitsmodus"
       }
     },
     "switch": {
@@ -438,6 +480,15 @@
       },
       "time_control_enabled": {
         "name": "Zeitsteuerung"
+      },
+      "charge_from_grid_enabled": {
+        "name": "Laden aus dem Netz"
+      },
+      "ems_control": {
+        "name": "KI-Steuerung"
+      },
+      "grid_export_enabled": {
+        "name": "Netzeinspeisung"
       }
     },
     "select": {
@@ -461,6 +512,9 @@
       },
       "ctrl_ups_mode": {
         "name": "UPS Modus"
+      },
+      "working_mode": {
+        "name": "Arbeitsmodus"
       }
     },
     "binary_sensor": {
@@ -514,6 +568,15 @@
       },
       "problem": {
         "name": "Problem"
+      },
+      "charge_from_grid_enabled": {
+        "name": "Laden aus dem Netz"
+      },
+      "ems_control": {
+        "name": "KI-Steuerung"
+      },
+      "grid_export_enabled": {
+        "name": "Netzeinspeisung"
       }
     },
     "number": {

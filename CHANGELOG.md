@@ -2,6 +2,32 @@
 
 Newest first. Each section is also published as the GitHub release for that version. Library changes are in the [library changelog](https://github.com/Ellmondo/bluetti-bt-connect-lib/blob/main/CHANGELOG.md).
 
+## 2.0.13 (2026-10-26)
+
+Requires `bluetti-bt-connect-lib==2.0.12`.
+
+### Faster updates on the EP2000
+
+Each poll now takes 13 Bluetooth requests instead of 28, so values update
+noticeably sooner after each poll starts. Values that rarely change (firmware
+versions, WiFi name, connected devices, cell and module counts, grid voltage
+and frequency limits) are now read every 10 minutes instead of every poll;
+they keep showing their last value in between and never go unavailable.
+Nothing to set up; details in the library's 2.0.12 notes.
+
+### Translations
+
+- English names for the read-only views of Working Mode, Charge From Grid,
+  Grid Export and AI Control Mode.
+- German names for 13 sensors that showed in English (pack SOC, SOH and
+  voltage, BMS model, household consumption, grid power, load phases, PV
+  totals and others), plus the German select and switch names for Working
+  Mode, Charge From Grid, Grid Export and AI Control Mode.
+- The translation tests pass again; they had shown 6 failures since well
+  before 2.0.0.
+- The release workflow now runs the tests, against the pinned library version,
+  before creating a release.
+
 ## 2.0.12 (2026-10-26)
 
 Requires `bluetti-bt-connect-lib==2.0.11`.

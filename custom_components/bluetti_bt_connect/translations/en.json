@@ -451,6 +451,9 @@
             },
             "battery_power_bms": {
                 "name": "Battery Power (BMS)"
+            },
+            "working_mode": {
+                "name": "Working Mode"
             }
         },
         "switch": {
@@ -568,6 +571,15 @@
             },
             "problem": {
                 "name": "Problem"
+            },
+            "charge_from_grid_enabled": {
+                "name": "Charge From Grid"
+            },
+            "ems_control": {
+                "name": "AI Control Mode"
+            },
+            "grid_export_enabled": {
+                "name": "Grid Export"
             }
         },
         "number": {

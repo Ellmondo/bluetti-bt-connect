@@ -7,7 +7,7 @@ name: Release
 # JSON files parse, and that the library version the manifest pins is on
 # PyPI - waiting up to 20 minutes for it, so the library and integration tags
 # can be pushed together. Home Assistant cannot install the integration until
-# that library version exists.
+# that library version exists. The tests then run against that version.
 
 on:
   push:
@@ -90,6 +90,20 @@ jobs:
           done
           echo "::error::bluetti-bt-connect-lib $LIB is not on PyPI after 20 minutes - check the library's release run, then re-run this job"
           exit 1
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      # The translation and unit tests only need the library, at exactly
+      # the version the manifest pins.
+      - name: Run tests
+        env:
+          LIB: ${{ steps.check.outputs.lib }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install "bluetti-bt-connect-lib==$LIB"
+          python -m unittest discover -s tests -p "*_test.py"
 
       - name: Create or update the release
         env:
