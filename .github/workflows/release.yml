@@ -75,13 +75,15 @@ jobs:
           PY
           cat release_notes.md
 
+      # Checks the simple index, which is what pip installs from. It can
+      # lag a minute or two behind PyPI's JSON API after a new upload.
       - name: Wait for the library on PyPI
         env:
           LIB: ${{ steps.check.outputs.lib }}
         run: |
-          url="https://pypi.org/pypi/bluetti-bt-connect-lib/$LIB/json"
+          url="https://pypi.org/simple/bluetti-bt-connect-lib/"
           for attempt in $(seq 1 40); do
-            if curl -fsS -o /dev/null "$url"; then
+            if curl -fsS -H "Cache-Control: no-cache" "$url" | grep -q "bluetti_bt_connect_lib-${LIB}[.-]"; then
               echo "bluetti-bt-connect-lib $LIB is on PyPI"
               exit 0
             fi
@@ -102,7 +104,17 @@ jobs:
           LIB: ${{ steps.check.outputs.lib }}
         run: |
           python -m pip install --upgrade pip
-          pip install "bluetti-bt-connect-lib==$LIB"
+          for attempt in 1 2 3 4 5; do
+            if pip install --no-cache-dir "bluetti-bt-connect-lib==$LIB"; then
+              break
+            fi
+            if [ "$attempt" = 5 ]; then
+              echo "::error::Could not install bluetti-bt-connect-lib $LIB from PyPI"
+              exit 1
+            fi
+            echo "Retrying the install in 30 s ($attempt/5)"
+            sleep 30
+          done
           python -m unittest discover -s tests -p "*_test.py"
 
       - name: Create or update the release
