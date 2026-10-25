@@ -2,6 +2,25 @@
 
 Newest first. Each section is also published as the GitHub release for that version. Library changes are in the [library changelog](https://github.com/Ellmondo/bluetti-bt-connect-lib/blob/main/CHANGELOG.md).
 
+## 2.0.14 (2026-10-26)
+
+Requires `bluetti-bt-connect-lib==2.0.13`.
+
+### EP2000: 14 requests a poll
+
+2.0.13 planned 13 requests a poll, but the battery refused one of the merged
+reads (1290-1327 runs past the end of a register block), so it settled at 15
+and logged a refused read each time the integration started. Reads now stay
+within BLUETTI's register blocks: 14 requests a poll (28 before 2.0.13) and no
+refused read. Nothing to set up.
+
+### Release workflow
+
+The release now waits for the library version to appear in the PyPI index pip
+installs from, and retries the install, before running the tests. The 2.0.13
+release run had failed at that step because PyPI listed the library a minute
+before pip could install it.
+
 ## 2.0.13 (2026-10-26)
 
 Requires `bluetti-bt-connect-lib==2.0.12`.
