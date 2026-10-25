@@ -22,7 +22,6 @@ DIAGNOSTICS = [
     FieldName.SYSTEM_ERROR,
     FieldName.MAX_CHARGE_CURRENT,
     FieldName.MAX_DISCHARGE_CURRENT,
-    FieldName.TIME_CONTROL_ENABLED,
     FieldName.SCHEDULE_SLOT_1,
     FieldName.SCHEDULE_SLOT_2,
     FieldName.SCHEDULE_SLOT_3,
@@ -35,6 +34,7 @@ DIAGNOSTICS = [
 ]
 
 CONFIGS = [
+    FieldName.TIME_CONTROL_ENABLED,
     FieldName.CTRL_CHARGING_MODE,
     FieldName.CTRL_DISPLAY_TIMEOUT,
     FieldName.CTRL_ECO,

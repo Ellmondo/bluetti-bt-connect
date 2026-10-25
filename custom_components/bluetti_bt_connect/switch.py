@@ -20,7 +20,7 @@ from bluetti_bt_connect_lib import (
     DeviceField,
     FieldName,
 )
-from bluetti_bt_connect_lib.enums import CLOUD_CONTROLLED_EMS_MODES
+from bluetti_bt_connect_lib.enums import CLOUD_CONTROLLED_EMS_MODES, EmsControlMode
 
 from .types import FullDeviceConfig, get_category
 from . import device_info as dev_info, get_unique_id
@@ -255,6 +255,22 @@ class BluettiSwitch(CoordinatorEntity, SwitchEntity):
                 raise HomeAssistantError(
                     f"AI control is locked while the battery is under cloud "
                     f"control ({mode.name}). Change it in the BLUETTI app."
+                )
+
+        if self._field.name == FieldName.TIME_CONTROL_ENABLED.value:
+            # AI mode and the cloud modes run the battery themselves and
+            # would undo the change.
+            data = self.coordinator.data or {}
+            mode = data.get(FieldName.EMS_CONTROL_MODE.value)
+            if mode in CLOUD_CONTROLLED_EMS_MODES:
+                raise HomeAssistantError(
+                    f"Time control is locked while the battery is under cloud "
+                    f"control ({mode.name}). Change it in the BLUETTI app."
+                )
+            if mode == EmsControlMode.AI:
+                raise HomeAssistantError(
+                    "BLUETTI AI mode overrides time control. Turn AI Control "
+                    "Mode off first."
                 )
 
         result = await self.coordinator.reader.write(self._field.name, state)

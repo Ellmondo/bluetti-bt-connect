@@ -38,6 +38,8 @@ local Bluetooth now. Full detail is in the
 | SOC low | 2022 | % - discharge floor, 5-100 in 1% steps |
 | SOC high | 2023 | % - charge ceiling, at least 5% above SOC low |
 | Working Mode | 2005 | Custom / Self-use / Backup / Time-of-use / Self-consumption + export |
+| Time Control | 2029 | switch - schedule on/off |
+| Set schedule (action) | 2030-2047 | up to six charge / discharge / standby periods, written in one go |
 | AI Control Mode | 2241 | switch - **on** = Bluetti's AI/EMS manages the system and overrides manual settings; **off** = manual control |
 
 **Two things to know:**

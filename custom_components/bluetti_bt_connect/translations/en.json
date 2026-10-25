@@ -445,6 +445,12 @@
             },
             "cell_voltage_spread": {
                 "name": "Cell Voltage Spread"
+            },
+            "battery_current": {
+                "name": "Battery Current"
+            },
+            "battery_power_bms": {
+                "name": "Battery Power (BMS)"
             }
         },
         "switch": {
@@ -480,6 +486,9 @@
             },
             "ems_control": {
                 "name": "AI Control Mode"
+            },
+            "time_control_enabled": {
+                "name": "Time Control"
             }
         },
         "select": {
@@ -602,6 +611,20 @@
                 "slave": {
                     "name": "Slave",
                     "description": "Modbus slave address to read from. 1 is the inverter; other addresses must appear in the battery's own node list (on an EP2000 system: 0 = EBOX, 41 = battery pack)."
+                }
+            }
+        },
+        "set_schedule": {
+            "name": "Set schedule",
+            "description": "Replaces the battery's time-control schedule (up to six charge, discharge or standby periods a day) in one write. Periods must stay within one day and must not overlap. An empty list clears the schedule. Refused while AI Control Mode or a cloud mode is in charge. The schedule only acts in the Custom working mode.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Battery",
+                    "description": "Which battery to change. Only needed when more than one is set up."
+                },
+                "periods": {
+                    "name": "Periods",
+                    "description": "List of periods, each with action (charge, discharge or standby), start and end (HH:MM)."
                 }
             }
         }

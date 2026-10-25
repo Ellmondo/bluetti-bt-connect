@@ -2,6 +2,55 @@
 
 Newest first. Each section is also published as the GitHub release for that version. Library changes are in the [library changelog](https://github.com/Ellmondo/bluetti-bt-connect-lib/blob/main/CHANGELOG.md).
 
+## 2.0.12 (2026-10-26)
+
+Requires `bluetti-bt-connect-lib==2.0.11`.
+
+### EP2000: edit the charge/discharge schedule
+
+New action **Set schedule** (`bluetti_bt_connect.set_schedule`) replaces the
+whole time-control schedule in one write, the way BLUETTI's app does it:
+
+```yaml
+action: bluetti_bt_connect.set_schedule
+data:
+  periods:
+    - action: charge
+      start: "11:01"
+      end: "13:59"
+    - action: discharge
+      start: "18:00"
+      end: "21:00"
+```
+
+- Up to six periods; `action` is `charge`, `discharge` or `standby`.
+- Each period stays within one day and periods must not overlap (they may
+  touch). An empty list clears the schedule.
+- Refused, with the reason, while AI Control Mode or a cloud mode (VPP,
+  dynamic pricing) is in charge, since they would undo it.
+- The schedule only acts in the Custom working mode. The action's response
+  includes a note when the working mode is something else.
+- The Schedule Slot sensors read the new schedule back a couple of seconds
+  later. It applies every day; the EP2000 has no weekday selection.
+
+**Time Control** is now a switch (2029) instead of a binary sensor, with the
+same AI/cloud guard. The old binary sensor shows as no longer provided; remove
+it under **Settings > Devices & services > Entities**.
+
+### EP2000: battery current and power from the BMS
+
+- **Battery Current** (A) and **Battery Power (BMS)** (W), straight from the
+  battery: positive while charging, negative while discharging.
+- Battery Net Power stays as it is; it is worked out from the inverter and
+  solar figures. The BMS figure is the battery's own measurement.
+- Both come from a read the integration already makes.
+
+### Releases
+
+Pushing a `vX.Y.Z` tag now creates the GitHub release, with this file's
+section for that version as the notes. It waits for the required library
+version to reach PyPI first.
+
 ## 2.0.11 (2026-10-25)
 
 Requires `bluetti-bt-connect-lib==2.0.10`.

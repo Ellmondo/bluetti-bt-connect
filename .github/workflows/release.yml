@@ -1,0 +1,106 @@
+name: Release
+
+# Pushing a tag vX.Y.Z creates the GitHub release HACS installs from, with the
+# "## X.Y.Z" section of CHANGELOG.md as its notes.
+#
+# Before releasing it checks that the tag matches manifest.json, that the
+# JSON files parse, and that the library version the manifest pins is on
+# PyPI - waiting up to 20 minutes for it, so the library and integration tags
+# can be pushed together. Home Assistant cannot install the integration until
+# that library version exists.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: GitHub release
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check version, JSON and release notes
+        id: check
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib, re, sys
+
+          root = pathlib.Path("custom_components/bluetti_bt_connect")
+          for path in [root / "manifest.json", *sorted((root / "translations").glob("*.json"))]:
+              try:
+                  json.loads(path.read_text(encoding="utf-8"))
+              except ValueError as err:
+                  print(f"::error file={path}::{err}")
+                  sys.exit(1)
+
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+          version = manifest["version"]
+          tag = os.environ["TAG"].removeprefix("v")
+          if tag != version:
+              print(f"::error::Tag {tag} does not match manifest version {version}")
+              sys.exit(1)
+
+          pins = [
+              r.split("==", 1)[1]
+              for r in manifest.get("requirements", [])
+              if r.startswith("bluetti-bt-connect-lib==")
+          ]
+          if len(pins) != 1:
+              print("::error::manifest.json must pin exactly one bluetti-bt-connect-lib version")
+              sys.exit(1)
+
+          text = pathlib.Path("CHANGELOG.md").read_text(encoding="utf-8")
+          match = re.search(
+              rf"^## {re.escape(version)}(?:[ \t][^\n]*)?\n(.*?)(?=^## |\Z)",
+              text,
+              re.M | re.S,
+          )
+          if not match or not match.group(1).strip():
+              print(f"::error::CHANGELOG.md has no '## {version}' section")
+              sys.exit(1)
+          pathlib.Path("release_notes.md").write_text(
+              match.group(1).strip() + "\n", encoding="utf-8"
+          )
+
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"version={version}\nlib={pins[0]}\n")
+          PY
+          cat release_notes.md
+
+      - name: Wait for the library on PyPI
+        env:
+          LIB: ${{ steps.check.outputs.lib }}
+        run: |
+          url="https://pypi.org/pypi/bluetti-bt-connect-lib/$LIB/json"
+          for attempt in $(seq 1 40); do
+            if curl -fsS -o /dev/null "$url"; then
+              echo "bluetti-bt-connect-lib $LIB is on PyPI"
+              exit 0
+            fi
+            echo "Waiting for bluetti-bt-connect-lib $LIB on PyPI ($attempt/40)"
+            sleep 30
+          done
+          echo "::error::bluetti-bt-connect-lib $LIB is not on PyPI after 20 minutes - check the library's release run, then re-run this job"
+          exit 1
+
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{ steps.check.outputs.version }}
+        run: |
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" \
+              --title "$VERSION" --notes-file release_notes.md
+          else
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" \
+              --title "$VERSION" --notes-file release_notes.md --verify-tag
+          fi

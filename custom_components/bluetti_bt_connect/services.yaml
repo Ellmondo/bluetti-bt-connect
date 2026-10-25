@@ -29,3 +29,18 @@ read_registers:
           min: 0
           max: 247
           mode: box
+
+set_schedule:
+  fields:
+    config_entry_id:
+      required: false
+      selector:
+        config_entry:
+          integration: bluetti_bt_connect
+    periods:
+      required: true
+      example: >-
+        [{"action": "charge", "start": "11:01", "end": "13:59"},
+        {"action": "discharge", "start": "18:00", "end": "21:00"}]
+      selector:
+        object:

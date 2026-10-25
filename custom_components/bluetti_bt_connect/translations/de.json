@@ -403,6 +403,12 @@
       },
       "cell_voltage_spread": {
         "name": "Zellspannungsdifferenz"
+      },
+      "battery_current": {
+        "name": "Batteriestrom"
+      },
+      "battery_power_bms": {
+        "name": "Batterieleistung (BMS)"
       }
     },
     "switch": {
@@ -429,6 +435,9 @@
       },
       "ctrl_power_off": {
         "name": "Ausschalter"
+      },
+      "time_control_enabled": {
+        "name": "Zeitsteuerung"
       }
     },
     "select": {
@@ -548,6 +557,20 @@
         "slave": {
           "name": "Slave",
           "description": "Modbus-Slave-Adresse, von der gelesen wird. 1 ist der Wechselrichter; andere Adressen müssen in der Geräteliste der Batterie stehen (bei einem EP2000-System: 0 = EBOX, 41 = Akkupack)."
+        }
+      }
+    },
+    "set_schedule": {
+      "name": "Zeitplan setzen",
+      "description": "Ersetzt den Zeitplan der Batterie (bis zu sechs Lade-, Entlade- oder Standby-Zeiträume pro Tag) in einem Schreibvorgang. Zeiträume müssen innerhalb eines Tages liegen und dürfen sich nicht überschneiden. Eine leere Liste löscht den Zeitplan. Abgelehnt, solange der KI-Modus oder ein Cloud-Modus aktiv ist. Der Zeitplan wirkt nur im Arbeitsmodus Benutzerdefiniert.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Batterie",
+          "description": "Welche Batterie geändert wird. Nur nötig, wenn mehrere eingerichtet sind."
+        },
+        "periods": {
+          "name": "Zeiträume",
+          "description": "Liste von Zeiträumen mit action (charge, discharge oder standby), start und end (HH:MM)."
         }
       }
     }
