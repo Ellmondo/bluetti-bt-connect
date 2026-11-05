@@ -4,7 +4,6 @@ from __future__ import annotations
 import asyncio
 import logging
 from homeassistant.components.number import NumberEntity, NumberMode
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.const import EntityCategory
 from homeassistant.exceptions import HomeAssistantError
@@ -24,7 +23,8 @@ from bluetti_bt_connect_lib.fields import check_soc_limits
 
 from .types import FullDeviceConfig, get_category
 from . import device_info as dev_info, get_unique_id
-from .const import DATA_COORDINATOR, DATA_LOCK, DOMAIN, WRITE_SETTLE_SECONDS
+from .const import WRITE_SETTLE_SECONDS
+from .data import BluettiConfigEntry
 from .coordinator import PollingCoordinator
 from .utils import mac_loggable, unique_id_logable
 
@@ -33,13 +33,13 @@ SOC_HIGH = FieldName.BATTERY_SOC_RANGE_END.value
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: BluettiConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Setup number entities."""
 
     config = FullDeviceConfig.from_dict(entry.data)
-    coordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
-    lock = hass.data[DOMAIN][entry.entry_id][DATA_LOCK]
+    coordinator = entry.runtime_data.coordinator
+    lock = entry.runtime_data.lock
 
     logger = logging.getLogger(
         f"{__name__}.{mac_loggable(config.address).replace(':', '_')}"

@@ -2,6 +2,40 @@
 
 Newest first. Each section is also published as the GitHub release for that version. Library changes are in the [library changelog](https://github.com/Ellmondo/bluetti-bt-connect-lib/blob/main/CHANGELOG.md).
 
+## 2.0.15 (2026-11-05)
+
+Requires `bluetti-bt-connect-lib==2.0.14` and Home Assistant 2025.1 or newer.
+
+### Ready for Home Assistant 2026.11
+
+Nothing changes in what you see or control; entity IDs stay the same. This
+release brings the integration in line with how current Home Assistant
+expects integrations to work:
+
+- **Marketplace category.** The manifest now lists the category
+  `energy.solar_batteries` (solar and home batteries), so the Marketplace and
+  the integrations page file it under Energy.
+- **Coordinator and config entry.** The polling coordinator is given its
+  config entry directly, which Home Assistant now expects instead of looking
+  it up implicitly.
+- **Runtime data on the config entry.** The coordinator, the Bluetooth
+  connection and its lock now live on the entry (`entry.runtime_data`), the
+  pattern Home Assistant recommends, instead of in `hass.data`. The
+  Read registers and Set schedule actions find the battery through its loaded
+  config entry.
+- **Clearer setup error.** If a config entry's settings cannot be read, setup
+  now fails with a message saying to remove and re-add the device, instead of
+  a generic failure.
+- **Config flow types** use `ConfigFlowResult`, the current type for config
+  and options flows.
+- **Translated name for Hold Bluetooth connection** (German: "Bluetooth-
+  Verbindung halten"). It was the last entity with a fixed English name.
+- `hacs.json` states the minimum Home Assistant version, 2025.1, so the
+  update is not offered to installs too old for it.
+
+The library no longer depends on the `async_timeout` package (library
+2.0.14).
+
 ## 2.0.14 (2026-10-26)
 
 Requires `bluetti-bt-connect-lib==2.0.13`.

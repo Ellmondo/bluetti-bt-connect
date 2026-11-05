@@ -5,10 +5,6 @@ MANUFACTURER = "Bluetti"
 
 CONF_OPTIONS = "options"
 
-DATA_COORDINATOR = "coordinator"
-DATA_LOCK = "lock"
-DATA_CONNECTION = "connection"
-
 CONNECTION_KEEP_ALIVE_SECONDS = -1
 """How long the shared BLE connection is held open after a conversation.
 

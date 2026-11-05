@@ -6,7 +6,6 @@ import logging
 from decimal import Decimal
 from typing import List
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.const import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -15,19 +14,20 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from bluetti_bt_connect_lib import build_device, FieldName, get_unit
 
 from . import device_info as dev_info, get_unique_id, FullDeviceConfig
-from .const import DATA_COORDINATOR, DOMAIN, MANUFACTURER
+from .const import DOMAIN, MANUFACTURER
+from .data import BluettiConfigEntry
 from .coordinator import PollingCoordinator
 from .utils import mac_loggable, unique_id_logable
 from .types import get_device_class, get_state_class, get_category
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: BluettiConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Setup sensor entities."""
 
     config = FullDeviceConfig.from_dict(entry.data)
-    coordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
+    coordinator = entry.runtime_data.coordinator
 
     logger = logging.getLogger(
         f"{__name__}.{mac_loggable(config.address).replace(':', '_')}"

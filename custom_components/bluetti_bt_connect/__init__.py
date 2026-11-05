@@ -10,20 +10,15 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP, Platform
 from homeassistant.core import Event, HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
-from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.exceptions import ConfigEntryError, ConfigEntryNotReady
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 
 from .utils import mac_loggable
 from bluetti_bt_connect_lib import DeviceConnection
 
-from .const import (
-    DATA_CONNECTION,
-    DATA_COORDINATOR,
-    DATA_LOCK,
-    DOMAIN,
-    MANUFACTURER,
-)
+from .const import DOMAIN, MANUFACTURER
+from .data import BluettiConfigEntry, BluettiData
 from .services import async_register_services
 from .shutdown import release_connection
 from .types import FullDeviceConfig
@@ -47,19 +42,18 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: BluettiConfigEntry) -> bool:
     """Set up Bluetti Powerstation from a config entry."""
 
     config = FullDeviceConfig.from_dict(entry.data)
 
     if config is None:
-        logging.getLogger(__name__).error(
-            "Failed to parse config entry data for '%s'. "
-            "This may happen when upgrading from v0.1.6 to v0.2.x "
-            "due to missing 'use_encryption' field.",
-            entry.title,
+        # Not something a retry fixes: the entry has to be set up again.
+        raise ConfigEntryError(
+            f"Could not read the settings of '{entry.title}'. Remove the "
+            "device and add it again. (This can happen after upgrading from "
+            "v0.1.6, whose entries lack the 'use_encryption' field.)"
         )
-        return False
 
     logger = logging.getLogger(
         f"{__name__}.{mac_loggable(config.address).replace(':', '_')}"
@@ -69,10 +63,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     if not bluetooth.async_address_present(hass, config.address):
         raise ConfigEntryNotReady("Bluetti device not present")
-
-    # Create data structure
-    hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN].setdefault(entry.entry_id, {})
 
     # One lock, so polls and writes never overlap on the device.
     lock = asyncio.Lock()
@@ -95,6 +85,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     logger.debug("Creating coordinator")
     coordinator = PollingCoordinator(
         hass,
+        entry,
         config,
         lock,
         connection,
@@ -112,9 +103,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     await coordinator.async_config_entry_first_refresh()
-    hass.data[DOMAIN][entry.entry_id].setdefault(DATA_COORDINATOR, coordinator)
-    hass.data[DOMAIN][entry.entry_id].setdefault(DATA_LOCK, lock)
-    hass.data[DOMAIN][entry.entry_id].setdefault(DATA_CONNECTION, connection)
+    entry.runtime_data = BluettiData(coordinator, lock, connection)
 
     logger.debug("Creating entities")
     # Setup platforms
@@ -125,7 +114,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: BluettiConfigEntry) -> bool:
     """Tear down the entry, releasing the BLE connection.
 
     Without this the shared connection outlives a reload: the link stays up,
@@ -139,25 +128,11 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if not unloaded:
         return False
 
-    data = hass.data.get(DOMAIN, {}).pop(entry.entry_id, {})
-    coordinator = data.get(DATA_COORDINATOR)
-    connection = data.get(DATA_CONNECTION)
-    lock = data.get(DATA_LOCK)
+    data: BluettiData = entry.runtime_data
+    data.coordinator.closing = True
 
-    if coordinator is not None:
-        coordinator.closing = True
-
-    if connection is not None:
-        if lock is not None:
-            # Same clean close as at shutdown - never mid-conversation.
-            logger = (
-                coordinator.logger
-                if coordinator is not None
-                else logging.getLogger(__name__)
-            )
-            await release_connection(lock, connection, logger)
-        else:
-            await connection.disconnect()
+    # Same clean close as at shutdown - never mid-conversation.
+    await release_connection(data.lock, data.connection, data.coordinator.logger)
 
     return True
 

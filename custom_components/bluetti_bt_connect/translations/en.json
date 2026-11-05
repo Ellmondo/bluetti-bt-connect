@@ -492,6 +492,9 @@
             },
             "time_control_enabled": {
                 "name": "Time Control"
+            },
+            "hold_bluetooth_connection": {
+                "name": "Hold Bluetooth connection"
             }
         },
         "select": {

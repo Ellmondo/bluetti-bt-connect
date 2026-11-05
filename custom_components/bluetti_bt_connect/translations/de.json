@@ -489,6 +489,9 @@
       },
       "grid_export_enabled": {
         "name": "Netzeinspeisung"
+      },
+      "hold_bluetooth_connection": {
+        "name": "Bluetooth-Verbindung halten"
       }
     },
     "select": {

@@ -35,7 +35,9 @@ from bluetti_bt_connect_lib.schedule import (
     validate_schedule,
 )
 
-from .const import DATA_COORDINATOR, DOMAIN, WRITE_SETTLE_SECONDS
+from homeassistant.config_entries import ConfigEntryState
+
+from .const import DOMAIN, WRITE_SETTLE_SECONDS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -100,9 +102,9 @@ def _coordinator_for(hass: HomeAssistant, entry_id: str | None):
     """The coordinator of the battery the call is aimed at."""
 
     loaded = {
-        key: value
-        for key, value in hass.data.get(DOMAIN, {}).items()
-        if isinstance(value, dict) and DATA_COORDINATOR in value
+        entry.entry_id: entry.runtime_data.coordinator
+        for entry in hass.config_entries.async_entries(DOMAIN)
+        if entry.state is ConfigEntryState.LOADED
     }
 
     if entry_id is not None:
@@ -110,10 +112,10 @@ def _coordinator_for(hass: HomeAssistant, entry_id: str | None):
             raise ServiceValidationError(
                 f"No loaded Bluetti BT Connect entry with id {entry_id}"
             )
-        return loaded[entry_id][DATA_COORDINATOR]
+        return loaded[entry_id]
 
     if len(loaded) == 1:
-        return next(iter(loaded.values()))[DATA_COORDINATOR]
+        return next(iter(loaded.values()))
 
     if not loaded:
         raise ServiceValidationError("No Bluetti BT Connect device is loaded")

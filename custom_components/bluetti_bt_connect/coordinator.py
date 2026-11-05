@@ -5,6 +5,7 @@ import asyncio
 from datetime import datetime, timedelta
 import logging
 from homeassistant.components import bluetooth
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from bluetti_bt_connect_lib import (
@@ -28,6 +29,7 @@ class PollingCoordinator(DataUpdateCoordinator):
     def __init__(
         self,
         hass: HomeAssistant,
+        config_entry: ConfigEntry,
         config: FullDeviceConfig,
         lock: asyncio.Lock,
         connection: DeviceConnection | None = None,
@@ -38,6 +40,9 @@ class PollingCoordinator(DataUpdateCoordinator):
             logging.getLogger(
                 f"{__name__}.{mac_loggable(config.address).replace(':', '_')}"
             ),
+            # Passed explicitly: Home Assistant no longer wants coordinators
+            # to look their config entry up implicitly.
+            config_entry=config_entry,
             name="Bluetti polling coordinator",
             update_interval=timedelta(seconds=config.polling_interval),
         )
