@@ -2,6 +2,48 @@
 
 Newest first. Each section is also published as the GitHub release for that version. Library changes are in the [library changelog](https://github.com/Ellmondo/bluetti-bt-connect-lib/blob/main/CHANGELOG.md).
 
+## 2.0.16 (2026-11-17)
+
+Requires `bluetti-bt-connect-lib==2.0.15` and Home Assistant 2025.1 or newer.
+
+### Bluetooth reliability and connection diagnostics
+
+BLUETTI devices, the EP2000's EBOX among them, can stop answering over
+Bluetooth after a long time connected, then refuse new connections while the
+app and WiFi carry on working. This is a fault in BLUETTI's firmware, also
+reported on other models, and no integration setting prevents it.
+**Restarting only the EBOX clears it**, which is much quicker than restarting
+the whole system, and the integration reconnects at the next poll as before.
+This release tidies up the integration's side of it and shows you when it
+has happened.
+
+- **A link that stops answering is dropped** and the next poll starts on a
+  fresh connection. A half-made connection is now closed properly, and stale
+  cached Bluetooth services are cleared when the device's notify
+  characteristic is missing.
+- **Clearer logs.** A missing reply is logged with the request that went
+  unanswered, how long the connection had been up and how many requests it
+  had carried. A failed connection is logged once per poll with a count of
+  failures in a row, instead of alongside "Shared connection unavailable"
+  and "Device not connected"; Home Assistant reports the failed update once.
+- **New diagnostic entities** (under Diagnostic on the device page):
+  - *Bluetooth connected* (on or off).
+  - *Connection failures in a row*.
+  - *Last successful poll*.
+  - *Connected since*.
+  - *Requests on this connection*: requests sent since the link was made. If
+    the lock-up returns, this shows how much traffic came before it.
+  - *Bluetooth connections*: connections made since Home Assistant started.
+
+  These keep updating while the device is unreachable, so an automation can
+  notify you, for example when *Last successful poll* is more than 10
+  minutes old.
+
+**Suggestion:** a polling interval of 60 seconds (Configure on the
+integration, then restart Home Assistant) is a third of the traffic of the
+20-second default. Other users report that the lock-up takes longer to appear
+with longer intervals.
+
 ## 2.0.15 (2026-11-05)
 
 Requires `bluetti-bt-connect-lib==2.0.14` and Home Assistant 2025.1 or newer.

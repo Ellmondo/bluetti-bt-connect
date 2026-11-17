@@ -61,6 +61,9 @@ class PollingCoordinator(DataUpdateCoordinator):
         take the device back.
         """
 
+        self.last_success_time: datetime | None = None
+        """When a poll last read the device successfully."""
+
         self.closing = False
         """Set once Home Assistant is stopping or the entry is unloading.
 
@@ -163,7 +166,8 @@ class PollingCoordinator(DataUpdateCoordinator):
                 )
                 is False
             ):
-                self.logger.warning("Device not connected")
+                # Home Assistant logs the failed update itself, once.
+                self.logger.debug("Device not advertising")
                 raise UpdateFailed("Device not connected")
 
         if self.reader is None:
@@ -178,6 +182,8 @@ class PollingCoordinator(DataUpdateCoordinator):
         data = await self.reader.read()
         if data is None:
             raise UpdateFailed("Error while reading data from device")
+
+        self.last_success_time = dt_util.utcnow()
 
         # Computed, not read from any device register: the existing
         # "Total AC Power" register was found (July 28) to actually report

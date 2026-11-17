@@ -451,6 +451,21 @@
       },
       "working_mode": {
         "name": "Arbeitsmodus"
+      },
+      "connection_failures": {
+        "name": "Fehlgeschlagene Verbindungen in Folge"
+      },
+      "last_successful_poll": {
+        "name": "Letzte erfolgreiche Abfrage"
+      },
+      "connected_since": {
+        "name": "Verbunden seit"
+      },
+      "requests_on_connection": {
+        "name": "Anfragen über diese Verbindung"
+      },
+      "bluetooth_connections": {
+        "name": "Bluetooth-Verbindungen"
       }
     },
     "switch": {
@@ -580,6 +595,9 @@
       },
       "grid_export_enabled": {
         "name": "Netzeinspeisung"
+      },
+      "bluetooth_connected": {
+        "name": "Bluetooth verbunden"
       }
     },
     "number": {

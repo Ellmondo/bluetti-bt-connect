@@ -17,6 +17,7 @@ from bluetti_bt_connect_lib import build_device, FieldName
 from .types import FullDeviceConfig, get_category
 from . import device_info as dev_info, get_unique_id
 from .data import BluettiConfigEntry
+from .connection_entities import connection_binary_sensors
 from .coordinator import PollingCoordinator
 from .utils import mac_loggable, unique_id_logable
 
@@ -71,6 +72,8 @@ async def async_setup_entry(
                 logger=logger,
             )
         )
+
+    sensors_to_add.extend(connection_binary_sensors(coordinator, device_info))
 
     async_add_entities(sensors_to_add)
 

@@ -454,6 +454,21 @@
             },
             "working_mode": {
                 "name": "Working Mode"
+            },
+            "connection_failures": {
+                "name": "Connection failures in a row"
+            },
+            "last_successful_poll": {
+                "name": "Last successful poll"
+            },
+            "connected_since": {
+                "name": "Connected since"
+            },
+            "requests_on_connection": {
+                "name": "Requests on this connection"
+            },
+            "bluetooth_connections": {
+                "name": "Bluetooth connections"
             }
         },
         "switch": {
@@ -583,6 +598,9 @@
             },
             "grid_export_enabled": {
                 "name": "Grid Export"
+            },
+            "bluetooth_connected": {
+                "name": "Bluetooth connected"
             }
         },
         "number": {
